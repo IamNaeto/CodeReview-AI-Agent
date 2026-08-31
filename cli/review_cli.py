@@ -116,8 +116,7 @@ def show_report(review):
     elif rec == "APPROVE WITH COMMENTS": color = "blue"
 
     console.print(Panel.fit(
-        f"[bold]{rec}[/bold]
-"
+        f"[bold]{rec}[/bold]\n"
         f"Findings: {len(review.get('findings', []))}  |  "
         f"Critical: {sev.get('critical',0)}  High: {sev.get('high',0)}  "
         f"Medium: {sev.get('medium',0)}  Low: {sev.get('low',0)}",

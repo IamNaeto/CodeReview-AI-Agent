@@ -22,7 +22,7 @@ def extract_json_payload(text: Optional[str]) -> Optional[str]:
     if cleaned.startswith('[') or cleaned.startswith('{'):
         return cleaned
 
-    code_block_matches = re.findall(r'```(?:json)?\s*(\[[\s\S]*?\]|\{[\s\S]*?\})\s*```', cleaned, flags=re.IGNORECASE)
+    code_block_matches = re.findall(r'```(?:json)?\s*(null|\[[\s\S]*?\]|\{[\s\S]*?\})\s*```', cleaned, flags=re.IGNORECASE)
     if code_block_matches:
         return code_block_matches[0].strip()
 
@@ -31,7 +31,7 @@ def extract_json_payload(text: Optional[str]) -> Optional[str]:
             parts = cleaned.split(marker)
             for part in parts[1:]:
                 candidate = part.strip()
-                if candidate.startswith('[') or candidate.startswith('{'):
+                if candidate.lower().startswith('null') or candidate.startswith('[') or candidate.startswith('{'):
                     return candidate.split('```')[0].strip()
 
     if cleaned.lower().startswith('null'):
@@ -79,11 +79,13 @@ Reviewing changes from {diff_info.source} to {diff_info.target}
 
     def parse_findings(self, response_text: str) -> List[Dict[str, Any]]:
         findings = []
+        parsed_json = False
 
         try:
             json_match = extract_json_payload(response_text)
             if json_match:
                 data = json.loads(json_match.strip())
+                parsed_json = True
                 if isinstance(data, list):
                     findings = data
                 elif isinstance(data, dict) and 'findings' in data:
@@ -91,7 +93,7 @@ Reviewing changes from {diff_info.source} to {diff_info.target}
         except Exception as e:
             logger.warning(f"[{self.name}] JSON parse failed: {e}")
 
-        if not findings:
+        if not findings and not parsed_json:
             findings = self._parse_text_findings(response_text)
 
         validated = []

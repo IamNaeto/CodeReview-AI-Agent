@@ -42,7 +42,10 @@ class GitService:
         repo_name = repo_url.split('/')[-1].replace('.git', '')
         local_path = os.path.join(self.work_dir, f"repo_{repo_name}_{os.urandom(4).hex()}")
         try:
-            repo = git.Repo.clone_from(repo_url, local_path, branch=branch or 'HEAD', depth=50)
+            clone_options = {'depth': 50}
+            if branch and branch.upper() != 'HEAD':
+                clone_options['branch'] = branch
+            repo = git.Repo.clone_from(repo_url, local_path, **clone_options)
             self._repos[repo_url] = local_path
             return local_path
         except Exception as e:
