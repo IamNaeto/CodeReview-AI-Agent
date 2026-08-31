@@ -291,19 +291,25 @@ Be conservative - only mark as invalid if you are confident it's a false positiv
 
     def _save_findings(self, findings: List[Dict[str, Any]]):
         for finding in findings:
+            file_path = finding.get('file_path') or ''
+            category = finding.get('category') or 'general'
+            explanation = finding.get('explanation') or ''
+            impact = finding.get('impact') or ''
+            recommended_fix = finding.get('recommended_fix') or ''
+            agent_name = finding.get('agent_name') or 'unknown'
             db_finding = Finding(
                 review_id=self.review_id,
                 title=finding.get('title', 'Unnamed')[:255],
-                category=finding.get('category', 'general')[:100],
+                category=category[:100],
                 severity=finding.get('severity', 'medium')[:20],
                 confidence=finding.get('confidence', 'medium')[:20],
-                file_path=finding.get('file_path', '')[:500],
+                file_path=file_path[:500],
                 line_start=finding.get('line_start'),
                 line_end=finding.get('line_end'),
-                explanation=finding.get('explanation', '')[:4000],
-                impact=finding.get('impact', '')[:2000],
-                recommended_fix=finding.get('recommended_fix', '')[:4000],
-                agent_name=finding.get('agent_name', 'unknown')[:100],
+                explanation=explanation[:4000],
+                impact=impact[:2000],
+                recommended_fix=recommended_fix[:4000],
+                agent_name=agent_name[:100],
                 cross_validated=finding.get('cross_validated', False)
             )
             self.db.add(db_finding)
