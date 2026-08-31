@@ -38,3 +38,4 @@ class OrderManager:
             user = self.db.query("SELECT * FROM users WHERE id = ?", (order['user_id'],))[0]
             report.append({**order, "user_email": user['email']})
         return report
+

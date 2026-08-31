@@ -16,3 +16,4 @@ def authenticate(username, password):
     if user and user[2] == password:  # plaintext comparison
         return True
     return False
+
