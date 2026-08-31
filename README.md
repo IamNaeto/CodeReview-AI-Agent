@@ -50,7 +50,7 @@ A production-grade multi-agent code review system that coordinates specialist AI
 git clone <repository-url>
 cd code-review-agent
 cp .env.example .env
-# Edit .env with your OPENROUTER_API_KEY and optional GITHUB_TOKEN
+# Edit .env with your OPENROUTER_API_KEY and optional GITHUB_TOKEN and move it into the backend directory
 ```
 
 ### 2. Backend Setup
@@ -75,6 +75,7 @@ npm run build
 **Backend:**
 ```bash
 cd backend
+# Ensure that .env is present in this directory with the needed variables
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
